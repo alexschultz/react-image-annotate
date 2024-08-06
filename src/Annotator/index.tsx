@@ -1,5 +1,3 @@
-// @flow
-
 import {
   Action,
   AnnotatorToolEnum,
@@ -19,7 +17,6 @@ import getFromLocalStorage from "../utils/get-from-local-storage";
 import historyHandler from "./reducers/history-handler";
 import imageReducer from "./reducers/image-reducer";
 import useEventCallback from "use-event-callback";
-import videoReducer from "./reducers/video-reducer";
 import { AutosegOptions } from "autoseg/webworker";
 
 export type AnnotatorProps = {
@@ -87,17 +84,12 @@ export const Annotator = ({
   },
   imageTagList = [],
   imageClsList = [],
-  keyframes = {},
   taskDescription = "",
   fullImageSegmentationMode = false,
   RegionEditLabel,
-  videoSrc,
-  videoTime = 0,
-  videoName,
   onExit,
   onNextImage,
   onPrevImage,
-  keypointDefinitions,
   autoSegmentationOptions = { type: "autoseg" },
   hideHeader,
   hideHeaderText,
@@ -115,18 +107,12 @@ export const Annotator = ({
     );
     if (selectedImage === -1) selectedImage = undefined;
   }
-  const annotationType = images ? "image" : "video";
-  const combinedReducers = (
-    annotationType === "image"
-      ? combineReducers(imageReducer, generalReducer)
-      : combineReducers(videoReducer, generalReducer)
-  ) as (
+  const combinedReducers = combineReducers(imageReducer, generalReducer) as (
     state: ImmutableObject<MainLayoutState>,
     action: Action
   ) => ImmutableObject<MainLayoutState>;
 
   const immutableState = Immutable({
-    annotationType,
     showTags,
     allowedArea,
     showPointDistances,
@@ -143,28 +129,18 @@ export const Annotator = ({
     regionTagSingleSelection,
     imageClsList,
     imageTagList,
-    currentVideoTime: videoTime,
     enabledTools,
     history: [],
-    videoName,
-    keypointDefinitions,
     allowComments,
     regionAllowedActions: {
       remove: regionAllowedActions?.remove ?? true,
       lock: regionAllowedActions?.lock ?? true,
       visibility: regionAllowedActions?.visibility ?? true,
     },
-    ...(annotationType === "image"
-      ? {
-          selectedImage,
-          images,
-          selectedImageFrameTime:
-            images && images.length > 0 ? images[0].frameTime : undefined,
-        }
-      : {
-          videoSrc,
-          keyframes,
-        }),
+    ...{
+      selectedImage,
+      images,
+    },
   });
   const [state, dispatchToReducer] = useReducer<
     (state: MainLayoutState, action: Action) => MainLayoutState
@@ -200,7 +176,7 @@ export const Annotator = ({
   });
 
   useEffect(() => {
-    if (selectedImage === undefined || state.annotationType !== "image") return;
+    if (selectedImage === undefined) return;
     const image = state.images[selectedImage];
     dispatchToReducer({
       type: "SELECT_IMAGE",
@@ -208,10 +184,9 @@ export const Annotator = ({
       image,
     });
     // @ts-ignore
-  }, [selectedImage, state.annotationType, state.images]);
+  }, [selectedImage, state.images]);
 
-  if (!images && !videoSrc)
-    return <div>Missing required prop "images" or "videoSrc"</div>;
+  if (!images) return <div>Missing required "images"</div>;
 
   return (
     <SettingsProvider>

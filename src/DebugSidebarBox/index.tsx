@@ -12,10 +12,9 @@ export const DebugSidebarBox = ({
   state,
   lastAction,
 }: DebugSidebarBoxProps) => {
-  const image =
-    state.annotationType === "image" && state.selectedImage
-      ? (state.images || [])[state.selectedImage]
-      : null;
+  const image = state.selectedImage
+    ? (state.images || [])[state.selectedImage]
+    : null;
   const region = image
     ? (image.regions || []).filter((r) => r.highlighted)
     : null;

@@ -8,13 +8,13 @@
     "dist"
   ],
   "dependencies": {
-    "@emotion/react": "^11.11.0",
-    "@emotion/styled": "^11.11.0",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.2.0",
-    "@mui/icons-material": "^5.15.14",
-    "@mui/material": "^5.15.14",
+    "@mui/icons-material": "^5.15.19",
+    "@mui/material": "^5.15.19",
     "autoseg": "^0.0.12",
     "classnames": "^2.5.1",
     "color-alpha": "^2.0.0",
@@ -69,6 +69,7 @@
   "scripts": {
     "start": "vite --force",
     "build": "tsc && vite build",
+    "watch": "tsc && vite build --watch",
     "prettier": "prettier --write \"src/**/*.js\"",
     "prettier:test": "prettier --check \"src/**/*.js\""
   },

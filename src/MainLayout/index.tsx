@@ -18,8 +18,6 @@ import ClassSelectionMenu from "../ClassSelectionMenu";
 import DebugBox from "../DebugSidebarBox";
 import HistorySidebarBox from "../HistorySidebarBox";
 import ImageCanvas from "../ImageCanvas";
-import KeyframeTimeline from "../KeyframeTimeline";
-import KeyframesSelector from "../KeyframesSelectorSidebarBox";
 import RegionSelector from "../RegionSelectorSidebarBox";
 import TagsSidebarBox from "../TagsSidebarBox";
 import TaskDescription from "../TaskDescriptionSidebarBox";
@@ -28,7 +26,6 @@ import getActiveImage from "../Annotator/reducers/get-active-image";
 import iconDictionary from "./icon-dictionary";
 import { useDispatchHotkeyHandlers } from "../ShortcutsManager";
 import useEventCallback from "use-event-callback";
-import useImpliedVideoRegions from "./use-implied-video-regions";
 import { useKey } from "../utils/use-key-hook";
 import { useSettings } from "../SettingsProvider";
 import { HotKeys } from "react-hotkeys";
@@ -149,8 +146,6 @@ export const MainLayout = ({
   const innerContainerRef = useRef<HTMLElement | null>(null);
   const hotkeyHandlers = useDispatchHotkeyHandlers({ dispatch });
 
-  let impliedVideoRegions = useImpliedVideoRegions(state);
-
   const refocusOnMouseEvent: MouseEventHandler<HotKeys> = useCallback(
     (e: MouseEvent<HotKeys>) => {
       const target = e.target as HTMLElement;
@@ -171,9 +166,7 @@ export const MainLayout = ({
         settings.showCrosshairs &&
         !["select", "pan", "zoom"].includes(state.selectedTool)
       }
-      key={
-        state.annotationType === "image" ? state.selectedImage : state.videoSrc
-      }
+      key={state.selectedImage}
       showMask={state.showMask}
       fullImageSegmentationMode={state.fullImageSegmentationMode}
       autoSegmentationOptions={state.autoSegmentationOptions}
@@ -183,33 +176,18 @@ export const MainLayout = ({
       regionClsList={state.regionClsList}
       regionTagList={state.regionTagList}
       regionTagSingleSelection={state.regionTagSingleSelection}
-      regions={
-        state.annotationType === "image"
-          ? activeImage?.regions || []
-          : impliedVideoRegions
-      }
+      regions={activeImage?.regions || []}
       realSize={
         activeImage && "realSize" in activeImage
           ? activeImage.realSize
           : undefined
       }
-      videoPlaying={"videoPlaying" in state ? state.videoPlaying : false}
-      imageSrc={
-        state.annotationType === "image" && activeImage && "src" in activeImage
-          ? activeImage.src
-          : null
-      }
-      videoSrc={state.annotationType === "video" ? state.videoSrc : null}
+      imageSrc={activeImage && "src" in activeImage ? activeImage.src : null}
       pointDistancePrecision={state.pointDistancePrecision}
       createWithPrimary={state.selectedTool.includes("create")}
       dragWithPrimary={state.selectedTool === "pan"}
       zoomWithPrimary={state.selectedTool === "zoom"}
       showPointDistances={state.showPointDistances}
-      videoTime={
-        state.annotationType === "image"
-          ? state.selectedImageFrameTime
-          : state.currentVideoTime
-      }
       keypointDefinitions={state.keypointDefinitions}
       onMouseMove={action("MOUSE_MOVE")}
       onMouseDown={action("MOUSE_DOWN")}
@@ -238,9 +216,7 @@ export const MainLayout = ({
       onSelectRegion={action("SELECT_REGION", "region")}
       onBeginMovePoint={action("BEGIN_MOVE_POINT", "point")}
       RegionEditLabel={RegionEditLabel}
-      onImageOrVideoLoaded={action("IMAGE_OR_VIDEO_LOADED", "metadata")}
-      onChangeVideoTime={action("CHANGE_VIDEO_TIME", "newTime")}
-      onChangeVideoPlaying={action("CHANGE_VIDEO_PLAYING", "isPlaying")}
+      onImageLoaded={action("IMAGE_LOADED", "metadata")}
       onRegionClassAdded={onRegionClassAdded}
       allowComments={state.allowComments}
     />
@@ -274,11 +250,6 @@ export const MainLayout = ({
       [
         !hidePrev && { name: "Prev" },
         !hideNext && { name: "Next" },
-        state.annotationType !== "video"
-          ? null
-          : !state.videoPlaying
-          ? { name: "Play" }
-          : { name: "Pause" },
         !hideClone &&
           !nextImageHasRegions &&
           activeImage?.regions && { name: "Clone" },
@@ -294,7 +265,6 @@ export const MainLayout = ({
       }, []),
     [
       state.fullScreen,
-      state.annotationType,
       hidePrev,
       hideNext,
       hideClone,
@@ -315,15 +285,7 @@ export const MainLayout = ({
   });
 
   const headerLeftSide: ReactElement[] = [
-    state.annotationType === "video" ? (
-      <KeyframeTimeline
-        key="KeyframeTimeline"
-        currentTime={state.currentVideoTime}
-        duration={state.videoDuration}
-        onChangeCurrentTime={action("CHANGE_VIDEO_TIME", "newTime")}
-        keyframes={state.keyframes}
-      />
-    ) : activeImage ? (
+    activeImage ? (
       <div key="active-item-name" className={classes.headerTitle}>
         {"name" in activeImage ? activeImage.name : ""}
       </div>
@@ -348,7 +310,7 @@ export const MainLayout = ({
         onSelectCls={action("SELECT_CLASSIFICATION", "cls")}
       />
     ),
-    state.annotationType === "image" && state.labelImages && (
+    state.labelImages && (
       <TagsSidebarBox
         key="tagsSidebarBox"
         currentImage={activeImage}
@@ -367,15 +329,6 @@ export const MainLayout = ({
       onDeleteRegion={action("DELETE_REGION", "region")}
       onChangeRegion={action("CHANGE_REGION", "region")}
     />,
-    state.annotationType === "video" && state.keyframes && (
-      <KeyframesSelector
-        key="keyframesSelector"
-        onChangeVideoTime={action("CHANGE_VIDEO_TIME", "newTime")}
-        onDeleteKeyframe={action("DELETE_KEYFRAME", "time")}
-        currentVideoTime={state.currentVideoTime}
-        keyframes={state.keyframes}
-      />
-    ),
     <HistorySidebarBox
       key="historySidebarBox"
       history={state.history}

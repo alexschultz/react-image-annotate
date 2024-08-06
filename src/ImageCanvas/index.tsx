@@ -1,5 +1,3 @@
-// @flow weak
-
 import {
   ComponentType,
   FunctionComponent,
@@ -31,7 +29,7 @@ import RegionTags from "../RegionTags";
 import RegionLabel, { RegionLabelProps } from "../RegionLabel";
 import ImageMask from "../ImageMask";
 import RegionSelectAndTransformBoxes from "../RegionSelectAndTransformBoxes";
-import VideoOrImageCanvasBackground from "../VideoOrImageCanvasBackground";
+import ImageCanvasBackground from "../ImageCanvasBackground/index.tsx";
 import useEventCallback from "use-event-callback";
 import RegionShapes from "../RegionShapes";
 import useWasdMode from "./use-wasd-mode";
@@ -69,8 +67,6 @@ const useStyles = tss.create({
 type Props = {
   regions: Array<Region>;
   imageSrc: string | null;
-  videoSrc: string | null;
-  videoTime?: number;
   keypointDefinitions?: KeypointsDefinition;
   onMouseMove?: (point: { x: number; y: number }) => any;
   onMouseDown?: (point: { x: number; y: number }) => any;
@@ -93,7 +89,6 @@ type Props = {
     | ComponentType<RegionLabelProps>
     | FunctionComponent<RegionLabelProps>
     | null;
-  videoPlaying?: boolean;
   zoomOnAllowedArea?: boolean;
   fullImageSegmentationMode?: boolean;
   autoSegmentationOptions?: AutosegOptions;
@@ -113,14 +108,12 @@ type Props = {
   ) => void;
   onSelectRegion: (region: Region) => void;
   onBeginMovePoint: (point: Point) => void;
-  onImageOrVideoLoaded: (props: {
+  onImageLoaded: (props: {
     naturalWidth: number;
     naturalHeight: number;
     duration?: number;
   }) => void;
-  onChangeVideoTime: (time: number) => void;
   onRegionClassAdded: (cls: string) => void;
-  onChangeVideoPlaying?: (playing: boolean) => void;
 };
 
 export type CanvasLayoutParams = {
@@ -149,8 +142,6 @@ const getDefaultMat: IMatrix = (
 export const ImageCanvas = ({
   regions,
   imageSrc,
-  videoSrc,
-  videoTime,
   realSize,
   showTags,
   onMouseMove = () => null,
@@ -168,11 +159,10 @@ export const ImageCanvas = ({
   showPointDistances,
   allowedArea,
   RegionEditLabel = null,
-  videoPlaying = false,
   showMask = true,
   fullImageSegmentationMode,
   autoSegmentationOptions,
-  onImageOrVideoLoaded,
+  onImageLoaded,
   onChangeRegion,
   onBeginRegionEdit,
   onCloseRegionEdit,
@@ -183,8 +173,6 @@ export const ImageCanvas = ({
   onSelectRegion,
   onBeginMovePoint,
   onDeleteRegion,
-  onChangeVideoTime,
-  onChangeVideoPlaying,
   onRegionClassAdded,
   zoomOnAllowedArea = true,
   modifyingAllowedArea = false,
@@ -237,7 +225,7 @@ export const ImageCanvas = ({
   } | null>(null);
   const imageLoaded = Boolean(imageDimensions && imageDimensions.naturalWidth);
 
-  const onVideoOrImageLoaded = useEventCallback(
+  const onImgLoaded = useEventCallback(
     ({
       naturalWidth,
       naturalHeight,
@@ -248,7 +236,7 @@ export const ImageCanvas = ({
       duration?: number;
     }) => {
       const dims = { naturalWidth, naturalHeight, duration };
-      if (onImageOrVideoLoaded) onImageOrVideoLoaded(dims);
+      if (onImageLoaded) onImageLoaded(dims);
       changeImageDimensions(dims);
       // Redundant update to fix rerendering issues
       setTimeout(() => changeImageDimensions(dims), 10);
@@ -527,17 +515,12 @@ export const ImageCanvas = ({
             imagePosition={imagePosition}
             regions={regions}
           />
-          <VideoOrImageCanvasBackground
-            videoPlaying={videoPlaying}
+          <ImageCanvasBackground
             imagePosition={imagePosition}
             mouseEvents={mouseEvents}
-            onLoad={onVideoOrImageLoaded}
-            videoTime={videoTime}
-            videoSrc={videoSrc}
+            onLoad={onImgLoaded}
             imageSrc={imageSrc}
             useCrossOrigin={fullImageSegmentationMode}
-            onChangeVideoTime={onChangeVideoTime}
-            onChangeVideoPlaying={onChangeVideoPlaying}
           />
         </PreventScrollToParents>
         <div className={classes.zoomIndicator}>

@@ -1,5 +1,3 @@
-// @flow
-
 import type {
   Box,
   KeypointDefinition,
@@ -33,14 +31,6 @@ export type Image = {
   regions?: Array<Region>;
   pixelSize?: { w: number; h: number };
   realSize?: { w: number; h: number; unitName: string };
-  frameTime?: number;
-  cls?: string;
-  tags?: Array<string>;
-};
-
-export type VideoImage = {
-  time: number;
-  regions: Array<Region>;
   cls?: string;
   tags?: Array<string>;
 };
@@ -91,7 +81,6 @@ export type RegionAllowedActions = {
 };
 
 export type MainLayoutStateBase = {
-  annotationType: "video" | "image";
   mouseDownAt?: { x: number; y: number };
   fullScreen?: boolean;
   settingsOpen?: boolean;
@@ -122,48 +111,21 @@ export type MainLayoutStateBase = {
 };
 
 export interface MainLayoutImageAnnotationState extends MainLayoutStateBase {
-  annotationType: "image";
-
   selectedImage?: number;
   images: Array<Image>;
   labelImages?: boolean;
-
-  // If the selectedImage corresponds to a frame of a video
-  selectedImageFrameTime?: number;
 }
 
-export interface MainLayoutVideoAnnotationState extends MainLayoutStateBase {
-  annotationType: "video";
-
-  videoSrc: string;
-  currentVideoTime: number;
-  videoName?: string;
-  videoPlaying: boolean;
-  videoDuration: number;
-  keyframes: {
-    [time: number]: {
-      time: number;
-      regions: Array<Region>;
-    };
-  };
-  pixelSize?: { w: number; h: number };
-  realSize?: { w: number; h: number; unitName: string };
-  lastMouseMoveCall?: number;
-}
-
-export type MainLayoutState =
-  | MainLayoutImageAnnotationState
-  | MainLayoutVideoAnnotationState;
+export type MainLayoutState = MainLayoutImageAnnotationState;
 
 export type Action =
   | { type: "@@INIT" }
   | { type: "SELECT_IMAGE"; image: Image; imageIndex: number }
   | {
-      type: "IMAGE_OR_VIDEO_LOADED";
+      type: "IMAGE_LOADED";
       metadata: {
         naturalWidth: number;
         naturalHeight: number;
-        duration?: number;
       };
     }
   | { type: "CHANGE_REGION"; region: Region }
@@ -193,12 +155,4 @@ export type Action =
   | { type: "CANCEL" }
   | { type: "SELECT_CLASSIFICATION"; cls: string }
   | { type: "ON_CLS_ADDED"; cls: string }
-  | { type: "CHANGE_IMAGE"; delta: { cls?: string; tags?: string[] } }
-  | { type: "CHANGE_VIDEO_TIME"; currentVideoTime: number; newTime: number }
-  | { type: "CHANGE_VIDEO_PLAYING"; videoPlaying: boolean; isPlaying: boolean }
-  | {
-      type: "DELETE_KEYFRAME";
-      keyframes: MainLayoutVideoAnnotationState["keyframes"];
-      time: number;
-    }
-  | { type: "IMAGE_LOADED" };
+  | { type: "CHANGE_IMAGE"; delta: { cls?: string; tags?: string[] } };

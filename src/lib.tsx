@@ -7,7 +7,6 @@ export type { AnnotatorProps } from "./Annotator";
 export type {
   MainLayoutState,
   MainLayoutImageAnnotationState,
-  MainLayoutVideoAnnotationState,
   MainLayoutStateBase,
   AnnotatorToolEnum,
 } from "./MainLayout/types";

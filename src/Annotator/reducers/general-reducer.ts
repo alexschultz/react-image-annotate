@@ -1,5 +1,5 @@
 // @flow
-import { Action, Image, MainLayoutState } from "../../MainLayout/types";
+import { Action, MainLayoutState } from "../../MainLayout/types";
 import { ExpandingLine, moveRegion, Region } from "../../types/region-tools.ts";
 import Immutable, { ImmutableObject } from "seamless-immutable";
 import isEqual from "lodash/isEqual";
@@ -120,22 +120,20 @@ export default <T extends ImmutableObject<MainLayoutState>>(
     return Immutable(state).setIn(path, newValue);
   };
 
-  const setNewImage = (img: string | Image, index: number) => {
-    let { frameTime }: Partial<Image> =
-      typeof img === "object" ? img : { src: img, frameTime: undefined };
+  const setNewImage = (index: number) => {
     return Immutable(
       Immutable(state).setIn(
         ["selectedImage"],
         index
       ) as ImmutableObject<MainLayoutState>
-    ).setIn(["selectedImageFrameTime"], frameTime);
+    );
   };
   switch (action.type) {
     case "@@INIT": {
       return state;
     }
     case "SELECT_IMAGE": {
-      return setNewImage(action.image, action.imageIndex) as T;
+      return setNewImage(action.imageIndex) as T;
     }
     case "SELECT_CLASSIFICATION": {
       return Immutable(state).setIn(["selectedCls"], action.cls) as T;
@@ -942,8 +940,7 @@ export default <T extends ImmutableObject<MainLayoutState>>(
             return state;
           if (currentImageIndex === 0) return state;
           if ("images" in state) {
-            const image = state.images[currentImageIndex - 1] as Image;
-            return setNewImage(image, currentImageIndex - 1) as T;
+            return setNewImage(currentImageIndex - 1) as T;
           }
           return state;
         }
@@ -951,19 +948,13 @@ export default <T extends ImmutableObject<MainLayoutState>>(
           if (currentImageIndex === null) return state;
           if (!("images" in state)) return state;
           if (currentImageIndex === state.images.length - 1) return state;
-          return setNewImage(
-            state.images[currentImageIndex + 1] as Image,
-            +currentImageIndex + 1
-          ) as T;
+          return setNewImage(+currentImageIndex + 1) as T;
         }
         case "clone": {
           if (currentImageIndex === null) return state;
           if (!("images" in state)) return state;
           if (currentImageIndex === state.images.length - 1) return state;
-          const newState = setNewImage(
-            state.images[+currentImageIndex + 1] as Image,
-            +currentImageIndex + 1
-          ) as T;
+          const newState = setNewImage(+currentImageIndex + 1) as T;
           return Immutable(newState).setIn(
             ["images", (currentImageIndex + 1).toString(), "regions"],
             activeImage?.regions || []
