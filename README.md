@@ -1,6 +1,6 @@
 # React Image Annotate
 
-[![npm version](https://img.shields.io/npm/v/@idapgroup/react-image-annotate.svg)](https://www.npmjs.com/package/@idapgroup/react-image-annotate)
+[![npm version](https://img.shields.io/npm/v/@asi/react-image-annotate.svg)](https://www.npmjs.com/package/@asi/react-image-annotate)
 
 Fork of react-image-annotate - The best image/video annotation tool
 ever. [Check out the demo here](https://universaldatatool.github.io/react-image-annotate/). Or
@@ -23,11 +23,11 @@ Implemented features in fork:
 
 ## Usage
 
-`npm i @idapgroup/react-image-annotate`
+`npm i @asi/react-image-annotate`
 
 ```javascript
 import React from "react";
-import ReactImageAnnotate from "@idapgroup/react-image-annotate";
+import ReactImageAnnotate from "@asi/react-image-annotate";
 
 const App = () => (
   <ReactImageAnnotate
@@ -38,14 +38,13 @@ const App = () => (
       {
         src: "https://placekitten.com/408/287",
         name: "Image 1",
-        regions: []
-      }
+        regions: [],
+      },
     ]}
   />
 );
 
 export default App;
-
 ```
 
 To get the proper fonts, make sure to import the Inter UI or Roboto font, the
@@ -60,7 +59,7 @@ following line added to a css file should suffice.
 All of the following properties can be defined on the Annotator...
 
 | Prop                       | Type (\* = required)                                    | Description                                                                                                                                                   | Default       |
-|----------------------------|---------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
+| -------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
 | `taskDescription`          | \*`string`                                              | Markdown description for what to do in the image.                                                                                                             |               |
 | `allowedArea`              | `{ x: number, y: number, w: number, h: number }`        | Area that is available for annotation.                                                                                                                        | Entire image. |
 | `regionTagList`            | `Array<string>`                                         | Allowed "tags" (mutually inclusive classifications) for regions.                                                                                              |               |

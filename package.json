@@ -1,5 +1,5 @@
 {
-  "name": "@idapgroup/react-image-annotate",
+  "name": "@asi/react-image-annotate",
   "version": "2.1.0",
   "type": "module",
   "main": "dist/react-image-annotate.js",
@@ -20,7 +20,7 @@
     "color-alpha": "^2.0.0",
     "lodash": "^4.17.21",
     "moment": "^2.30.0",
-    "monaco-editor": "^0.47.0",
+    "monaco-editor": "^0.44.0",
     "react-full-screen": "^1.1.1",
     "react-hotkeys": "^2.0.0",
     "react-markdown": "^9.0.0",
@@ -64,7 +64,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/idapgroup/react-image-annotate.git"
+    "url": "git+https://github.com/alexschultz/react-image-annotate.git"
   },
   "scripts": {
     "start": "vite --force",
