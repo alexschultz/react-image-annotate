@@ -47,8 +47,8 @@ export const examples: Record<string, () => Omit<AnnotatorProps, "onExit">> = {
     regionTagList: ["has-bun", "has-sausage"],
     regionTagSingleSelection: true,
     regionClsList: [
-      { id: "1", label: "hotdog" },
-      { id: "2", label: "not-hotdog" },
+      { id: "1", label: "hotdog", color: "#33ccff" },
+      { id: "2", label: "not-hotdog", color: "#33cc33" },
     ],
     enabledTools: [
       "select",

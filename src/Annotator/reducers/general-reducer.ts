@@ -156,7 +156,16 @@ export default <T extends ImmutableObject<MainLayoutState>>(
             ["selectedCls"],
             action.region.cls
           ) as T;
-          action.region.color = colors[clsIndex % colors.length];
+
+          if (
+            state.regionClsList &&
+            state.regionClsList[clsIndex] &&
+            typeof state.regionClsList[clsIndex] !== "string"
+          ) {
+            action.region.color = state.regionClsList[clsIndex].color;
+          } else {
+            action.region.color = colors[clsIndex % colors.length];
+          }
         }
       }
       if (!isEqual(oldRegion?.tags, action.region.tags)) {
@@ -628,8 +637,9 @@ export default <T extends ImmutableObject<MainLayoutState>>(
       }
 
       let newRegion;
-      let defaultRegionCls = state.selectedCls,
-        defaultRegionColor = "#ff0000";
+      let defaultRegionCls = state.selectedCls;
+      let defaultRegionColor = "#ff0000";
+      console.debug(defaultRegionColor);
       const clsIndex =
         defaultRegionCls && state.regionClsList
           ? state.regionClsList.findIndex((cls) =>
@@ -638,10 +648,14 @@ export default <T extends ImmutableObject<MainLayoutState>>(
                 : cls.id === defaultRegionCls
             )
           : -1;
-      if (clsIndex !== -1) {
-        defaultRegionColor = colors[clsIndex % colors.length];
-      }
 
+      if (clsIndex !== -1 && defaultRegionCls && state.regionClsList) {
+        const cls = state.regionClsList[clsIndex];
+        defaultRegionColor =
+          typeof cls !== "string"
+            ? cls.color
+            : colors[clsIndex % colors.length];
+      }
       switch (state.selectedTool) {
         case "create-point": {
           state = saveToHistory(state, "Create Point") as T;

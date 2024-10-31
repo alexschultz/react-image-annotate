@@ -25,7 +25,7 @@ export type AnnotatorProps = {
   regionTagList?: Array<string>;
   regionTagSingleSelection?: boolean;
   regionAllowedActions?: Partial<RegionAllowedActions>;
-  regionClsList?: Array<string | { id: string; label: string }>;
+  regionClsList?: Array<string | { id: string; label: string; color: string }>;
   imageTagList?: Array<string>;
   imageClsList?: Array<string>;
   enabledTools?: Array<AnnotatorToolEnum>;
@@ -37,10 +37,6 @@ export type AnnotatorProps = {
   pointDistancePrecision?: number;
   RegionEditLabel?: ComponentType<any> | FunctionComponent<any> | null;
   onExit: (state: MainLayoutState) => void;
-  videoTime?: number;
-  videoSrc?: string;
-  keyframes?: Object;
-  videoName?: string;
   keypointDefinitions?: KeypointsDefinition;
   fullImageSegmentationMode?: boolean;
   autoSegmentationOptions?: AutosegOptions;
@@ -73,7 +69,7 @@ export const Annotator = ({
     "create-expanding-line",
     "show-mask",
   ],
-  selectedTool = "select",
+  selectedTool = "create-box",
   regionTagSingleSelection = false,
   regionTagList = [],
   regionClsList = [],
@@ -102,9 +98,17 @@ export const Annotator = ({
   allowComments,
 }: AnnotatorProps) => {
   if (typeof selectedImage === "string") {
+    //console.log("selected image: " + selectedImage);
     selectedImage = (images || []).findIndex(
-      (img) => img.src === selectedImage
+      (img) => img.name === selectedImage
     );
+
+    //console.log("selected image: " + selectedImage);
+    //console.log("image count: " + images?.length);
+    // console.log(
+    //   "image src: " + JSON.stringify((images || [])[selectedImage].src)
+    // );
+
     if (selectedImage === -1) selectedImage = undefined;
   }
   const combinedReducers = combineReducers(imageReducer, generalReducer) as (

@@ -52,13 +52,15 @@ const Number = styled("div")(() => ({
   color: muiColors.grey[700],
 }));
 
-const getRegionValue = (item: string | { id: string; label: string }) => {
+const getRegionValue = (
+  item: string | { id: string; label: string; color: string }
+) => {
   return typeof item === "string" ? item : item.id;
 };
 
 interface ClassSelectionMenuProps {
   selectedCls?: string;
-  regionClsList: (string | { id: string; label: string })[];
+  regionClsList: (string | { id: string; label: string; color: string })[];
   onSelectCls: (value: string) => void;
 }
 
@@ -70,7 +72,7 @@ export const ClassSelectionMenu = ({
   useEffect(() => {
     const keyMapping: Record<
       string,
-      (item?: string | { id: string; label: string }) => void
+      (item?: string | { id: string; label: string; color: string }) => void
     > = {};
     for (let i = 0; i < 9 && i < regionClsList.length; i++) {
       keyMapping[i + 1] = () => {
@@ -105,7 +107,12 @@ export const ClassSelectionMenu = ({
             onClick={() => onSelectCls(getRegionValue(item))}
           >
             <Circle
-              style={{ backgroundColor: colors[index % colors.length] }}
+              style={{
+                backgroundColor:
+                  typeof item === "object"
+                    ? item.color
+                    : colors[index % colors.length],
+              }}
             />
             <Label
               className={classnames({

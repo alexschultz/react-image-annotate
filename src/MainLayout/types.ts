@@ -94,7 +94,9 @@ export type MainLayoutStateBase = {
   mode: Mode;
   taskDescription: string;
   allowedArea?: { x: number; y: number; w: number; h: number };
-  regionClsList?: Array<string> | Array<{ id: string; label: string }>;
+  regionClsList?:
+    | Array<string>
+    | Array<{ id: string; label: string; color: string }>;
   regionTagList?: Array<string>;
   regionTagSingleSelection?: boolean;
   regionAllowedActions: RegionAllowedActions;
