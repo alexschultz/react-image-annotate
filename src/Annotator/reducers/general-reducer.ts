@@ -157,14 +157,12 @@ export default <T extends ImmutableObject<MainLayoutState>>(
             action.region.cls
           ) as T;
 
-          if (
-            state.regionClsList &&
-            state.regionClsList[clsIndex] &&
-            typeof state.regionClsList[clsIndex] !== "string"
-          ) {
-            action.region.color = state.regionClsList[clsIndex].color;
-          } else {
-            action.region.color = colors[clsIndex % colors.length];
+          if (clsIndex !== -1 && state.regionClsList) {
+            const cls = state.regionClsList[clsIndex];
+            action.region.color =
+              typeof cls !== "string"
+                ? cls.color
+                : colors[clsIndex % colors.length];
           }
         }
       }
