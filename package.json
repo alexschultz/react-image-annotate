@@ -1,6 +1,6 @@
 {
   "name": "@advancedsolutions/react-image-annotate",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "type": "module",
   "main": "dist/react-image-annotate.js",
   "types": "dist/lib.d.ts",
