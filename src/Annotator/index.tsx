@@ -31,6 +31,7 @@ export type AnnotatorProps = {
   enabledTools?: Array<AnnotatorToolEnum>;
   selectedTool?: String;
   showTags?: boolean;
+  selectedCls?: string;
   selectedImage?: string | number;
   images?: Array<Image>;
   showPointDistances?: boolean;
@@ -60,6 +61,7 @@ export const Annotator = ({
   showPointDistances,
   pointDistancePrecision,
   showTags = getFromLocalStorage("showTags", true),
+  selectedCls,
   enabledTools = [
     "select",
     "create-point",
@@ -118,6 +120,7 @@ export const Annotator = ({
 
   const immutableState = Immutable({
     showTags,
+    selectedCls,
     allowedArea,
     showPointDistances,
     pointDistancePrecision,

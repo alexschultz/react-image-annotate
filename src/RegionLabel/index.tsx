@@ -69,7 +69,7 @@ const useStyles = tss.create({
 export type RegionLabelProps = {
   region: Region;
   editing?: boolean;
-  allowedClasses?: Array<string> | Array<{ id: string; label: string }>;
+  allowedClasses?: Array<string | { id: string; label: string; color: string }>;
   allowedTags?: Array<string>;
   tagSingleSelection?: boolean;
   cls?: string;

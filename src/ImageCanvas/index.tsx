@@ -81,7 +81,7 @@ type Props = {
   showHighlightBox?: boolean;
   showPointDistances?: boolean;
   pointDistancePrecision?: number;
-  regionClsList?: Array<string> | Array<{ id: string; label: string }>;
+  regionClsList?: Array<string | { id: string; label: string; color: string }>;
   regionTagList?: Array<string>;
   regionTagSingleSelection?: boolean;
   allowedArea?: { x: number; y: number; w: number; h: number };
